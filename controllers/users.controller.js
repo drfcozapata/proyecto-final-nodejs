@@ -1,17 +1,16 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-
-// require('crypto').randomBytes(64).toString('hex')
+dotenv.config({ path: './config.env' });
 
 // Models
 const { User } = require('../models/user.model');
+const { Order } = require('../models/order.model');
+const { Product } = require('../models/product.model');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync');
 const { AppError } = require('../utils/appError');
-
-dotenv.config({ path: './config.env' });
 
 const getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.findAll({
@@ -24,48 +23,22 @@ const getAllUsers = catchAsync(async (req, res, next) => {
 });
 
 const createUser = catchAsync(async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { username, email, password, role } = req.body;
 
   const salt = await bcrypt.genSalt(12);
   const hashPassword = await bcrypt.hash(password, salt);
 
   const newUser = await User.create({
-    name,
+    username,
     email,
     password: hashPassword,
     role,
   });
 
-  // Remove password from response
   newUser.password = undefined;
-
-  res.status(201).json({ newUser });
-});
-
-const getUserById = catchAsync(async (req, res, next) => {
-  const { user } = req;
-
-  res.status(200).json({
-    user,
-  });
-});
-
-const updateUser = catchAsync(async (req, res, next) => {
-  const { user } = req;
-  const { name } = req.body;
-
-  await user.update({ name });
-
-  res.status(200).json({ status: 'success' });
-});
-
-const deleteUser = catchAsync(async (req, res, next) => {
-  const { user } = req;
-
-  await user.update({ status: 'deleted' });
-
-  res.status(200).json({
-    status: 'success',
+  res.status(201).json({
+    status: 'User successfully created',
+    newUser,
   });
 });
 
@@ -88,20 +61,106 @@ const login = catchAsync(async (req, res, next) => {
   });
 
   user.password = undefined;
+  res.status(200).json({
+    status: 'Login successful',
+    token,
+    user,
+  });
+});
 
-  res.status(200).json({ token, user });
+const getUserProducts = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+
+  const userProducts = await Product.findAll({
+    where: {
+      userId: sessionUser.id,
+    },
+  });
+
+  if (userProducts.length === 0) {
+    return next(new AppError('No products found for this user', 404));
+  } else {
+    res.status(200).json({
+      userProducts,
+    });
+  }
+});
+
+const updateUser = catchAsync(async (req, res, next) => {
+  const { user } = req;
+  const { name, email } = req.body;
+
+  await user.update({ name, email });
+
+  res.status(200).json({
+    status: 'User successfully updated',
+  });
+});
+
+const deleteUser = catchAsync(async (req, res, next) => {
+  const { user } = req;
+
+  await user.update({ status: 'deleted' });
+
+  res.status(200).json({
+    status: 'User successfully deleted',
+  });
+});
+
+const getUserOrders = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+
+  const userOrders = await Order.findAll({
+    where: {
+      userId: sessionUser.id,
+      status: 'purchased',
+    },
+  });
+
+  if (userOrders.length === 0) {
+    return next(new AppError('No orders found for this user', 404));
+  } else {
+    res.status(200).json({
+      userOrders,
+    });
+  }
+});
+
+const getUserOrderById = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+  const { id } = req.params;
+
+  const userOrder = await Order.findOne({
+    where: {
+      userId: sessionUser.id,
+      id,
+      status: 'purchased',
+    },
+  });
+
+  if (!userOrder) {
+    return next(new AppError(`Order with ID: ${id} does not exist`, 404));
+  } else {
+    res.status(200).json({
+      userOrder,
+    });
+  }
 });
 
 const checkToken = catchAsync(async (req, res, next) => {
-  res.status(200).json({ user: req.sessionUser });
+  res.status(200).json({
+    user: req.sessionUser,
+  });
 });
 
 module.exports = {
   getAllUsers,
   createUser,
-  getUserById,
+  login,
+  getUserProducts,
   updateUser,
   deleteUser,
-  login,
+  getUserOrders,
+  getUserOrderById,
   checkToken,
 };
