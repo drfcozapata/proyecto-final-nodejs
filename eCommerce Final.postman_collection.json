@@ -160,20 +160,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/users/orders/:id",
+							"raw": "{{URL}}/users/orders/2",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"users",
 								"orders",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": null
-								}
+								"2"
 							]
 						}
 					},
@@ -278,7 +272,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"iPhone 11\",\n    \"description\": \"iPhone 11 is a smartphone\",\n    \"quantity\": 20,\n    \"price\": 900,\n    \"categoryId\": 1\n}",
+							"raw": "{\n    \"title\": \"Laptop Lenovo Ideapad 3\",\n    \"description\": \"Laptop Lenovo Ideapad 3 AMD Ryzen 5 8Gb Ram 256Gb SSD 15.6\",\n    \"quantity\": 20,\n    \"price\": 735,\n    \"categoryId\": 3\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -340,19 +334,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/:id",
+							"raw": "{{URL}}/products/5",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": null
-								}
+								"5"
 							]
 						}
 					},
@@ -375,7 +363,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"\",\n    \"description\": \"\",\n    \"quantity\": \"\",\n    \"price\": \"\"\n}",
+							"raw": "{\n    \"title\": \"Sony Bravia XR-55A80J\",\n    \"description\": \"The Sony Bravia smart TV is the smartest TV you'll never see\",\n    \"quantity\": \"20\",\n    \"price\": \"900\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -383,19 +371,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/products/:id",
+							"raw": "{{URL}}/products/2",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": null
-								}
+								"2"
 							]
 						}
 					},
@@ -417,19 +399,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/:id",
+							"raw": "{{URL}}/products/5",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": null
-								}
+								"5"
 							]
 						}
 					},
@@ -438,16 +414,6 @@
 				{
 					"name": "Get Categories",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -480,7 +446,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Smartphones\"\n}",
+							"raw": "{\n    \"name\": \"Freezer\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -517,7 +483,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"\"\n}",
+							"raw": "{\n    \"name\": \"Music\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -525,20 +491,176 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/products/categories/:id",
+							"raw": "{{URL}}/products/categories/4",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
 								"categories",
-								":id"
-							],
-							"variable": [
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carts",
+			"item": [
+				{
+					"name": "Get User Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "id",
-									"value": null
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
 								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cart",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Product to Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": 1,\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/cart/add-product",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"add-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": 2,\n    \"newQuantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/cart/update-cart",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"update-cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Purchase Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cart/purchase",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"purchase"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product from Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cart/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"1"
 							]
 						}
 					},

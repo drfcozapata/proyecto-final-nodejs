@@ -93,29 +93,31 @@ const deleteProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-const getCategories = catchAsync(async (req, res, next) => {
-  const categories = await Category.findAll({
+const getAllCategories = catchAsync(async (req, res, next) => {
+  const allCategories = await Category.findAll({
     where: { status: 'active' },
   });
 
   res.status(200).json({
     status: 'success',
-    categories,
+    allCategories,
   });
 });
 
 const createNewCategory = catchAsync(async (req, res, next) => {
   const { name } = req.body;
 
+  if (name.length === 0) {
+    return next(new AppError('Category name cannot be empty', 400));
+  }
+
   const newCategory = await Category.create({
     name,
   });
 
   res.status(201).json({
-    status: 'success',
-    data: {
-      newCategory,
-    },
+    status: 'New category successfully created',
+    newCategory,
   });
 });
 
@@ -126,6 +128,13 @@ const updateCategory = catchAsync(async (req, res, next) => {
   const category = await Category.findOne({
     where: { id, status: 'active' },
   });
+
+  if (!category) {
+    return next(new AppError('Category not found with that ID', 404));
+  }
+  if (name.length === 0) {
+    return next(new AppError('Category new name cannot be empty', 400));
+  }
 
   const updatedCategory = await category.update({
     name,
@@ -143,7 +152,7 @@ module.exports = {
   getProducById,
   updateProduct,
   deleteProduct,
-  getCategories,
+  getAllCategories,
   createNewCategory,
   updateCategory,
 };

@@ -31,7 +31,7 @@ app.use(limiter);
 // Endpoints
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/products', productsRouter);
-app.use('api/v1/cart', cartRouter);
+app.use('/api/v1/cart', cartRouter);
 
 // Global error handler
 app.use('*', globalErrorHandler);

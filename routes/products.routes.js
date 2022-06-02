@@ -7,14 +7,12 @@ const {
 } = require('../middlewares/users.middlewares');
 const {
   createProductValidations,
-  createNewCategoryValidations,
   checkValidations,
 } = require('../middlewares/validations.middlewares');
 const {
   productExists,
   protectProductOwner,
 } = require('../middlewares/products.middleware');
-const { categoryExists } = require('../middlewares/categories.middleware');
 
 // Controllers
 const { checkToken } = require('../controllers/users.controller');
@@ -24,7 +22,7 @@ const {
   getProducById,
   updateProduct,
   deleteProduct,
-  getCategories,
+  getAllCategories,
   createNewCategory,
   updateCategory,
 } = require('../controllers/products.controller');
@@ -33,6 +31,7 @@ const router = express.Router();
 
 // Routes unprotected
 router.get('/', getAllProducts);
+router.get('/categories', getAllCategories);
 router.get('/:id', productExists, getProducById);
 
 // Apply protectToken middleware and checkToken controller
@@ -41,19 +40,11 @@ router.get('/check-token', checkToken);
 
 // Routes
 router.post('/', createProductValidations, checkValidations, createProduct);
+router.post('/categories', protectAdmin, createNewCategory);
+router.patch('/categories/:id', protectAdmin, updateCategory);
 router
   .route('/:id', productExists, protectProductOwner)
   .patch(updateProduct)
   .delete(deleteProduct);
-router
-  .route('/categories')
-  .get(getCategories)
-  .post(
-    protectAdmin,
-    createNewCategoryValidations,
-    checkValidations,
-    createNewCategory
-  );
-router.patch('/categories/:id', protectAdmin, categoryExists, updateCategory);
 
 module.exports = { productsRouter: router };
