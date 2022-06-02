@@ -19,6 +19,16 @@ app.use(cors());
 // Enable incoming JSON data
 app.use(express.json());
 
+// Enable helmet
+app.use(helmet());
+
+// Enable compression
+app.use(compression());
+
+// Enable Morgan
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
+else app.use(morgan('combined'));
+
 // Limit IP requests
 const limiter = rateLimit({
   max: 10000,
