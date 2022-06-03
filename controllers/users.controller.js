@@ -7,6 +7,8 @@ dotenv.config({ path: './config.env' });
 const { User } = require('../models/user.model');
 const { Order } = require('../models/order.model');
 const { Product } = require('../models/product.model');
+const { Cart } = require('../models/cart.model');
+const { ProductsInCart } = require('../models/productsInCart.model');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync');
@@ -115,15 +117,34 @@ const getUserOrders = catchAsync(async (req, res, next) => {
       userId: sessionUser.id,
       status: 'purchased',
     },
+    attributes: ['id', 'totalPrice', 'status', 'createdAt'],
+    include: [
+      {
+        model: Cart,
+        attributes: ['userId', 'status'],
+        include: [
+          {
+            model: ProductsInCart,
+            attributes: ['productId', 'quantity'],
+            include: [
+              {
+                model: Product,
+                attributes: ['title', 'description', 'price'],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   });
 
-  if (userOrders.length === 0) {
-    return next(new AppError('No orders found for this user', 404));
-  } else {
-    res.status(200).json({
-      userOrders,
-    });
-  }
+  // if (userOrders.length === 0) {
+  //   return next(new AppError('No orders found for this user', 404));
+  // } else {
+  res.status(200).json({
+    userOrders,
+  });
+  // }
 });
 
 const getUserOrderById = catchAsync(async (req, res, next) => {
@@ -136,6 +157,25 @@ const getUserOrderById = catchAsync(async (req, res, next) => {
       id,
       status: 'purchased',
     },
+    attributes: ['id', 'totalPrice', 'status', 'createdAt'],
+    include: [
+      {
+        model: Cart,
+        attributes: ['userId', 'status'],
+        include: [
+          {
+            model: ProductsInCart,
+            attributes: ['productId', 'quantity'],
+            include: [
+              {
+                model: Product,
+                attributes: ['title', 'description', 'price'],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   });
 
   if (!userOrder) {

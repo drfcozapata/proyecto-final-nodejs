@@ -36,7 +36,10 @@ const addProductToCart = catchAsync(async (req, res, next) => {
   const { sessionUser } = req;
 
   // Validate that there is enough product in stock
-  const product = await Product.findOne({ where: { id: productId } });
+  const product = await Product.findOne({
+    where: { id: productId },
+    status: 'active',
+  });
 
   if (!product) {
     return next(new AppError('There is no product with that ID', 404));
@@ -68,7 +71,7 @@ const addProductToCart = catchAsync(async (req, res, next) => {
   } else {
     // Validate if product already exists in the cart
     const productInCart = await ProductsInCart.findOne({
-      where: { cartId: cart.id, productId, status: 'active' },
+      where: { cartId: cart.id, productId },
       include: [{ model: Product, attributes: ['id', 'title', 'price'] }],
     });
 
@@ -268,7 +271,7 @@ const purchaseCart = catchAsync(async (req, res, next) => {
     userId: sessionUser.id,
     cartId: cart.id,
     totalPrice,
-    status: 'purshased',
+    status: 'purchased',
   });
 
   res.status(200).json({

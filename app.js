@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const compression = require('compression');
 
 // Controllers
 const { globalErrorHandler } = require('./controllers/errors.controller');
